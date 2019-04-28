@@ -210,4 +210,16 @@ public class UserServiceImpl implements IUserService {
         }
         return ServerResponse.creatBySuccessMessage("注册成功");
     }
+
+    /**
+    * @description: 校验用户是否为管理员
+    * @param: [user]
+    * @return: com.mmall.common.ServerResponse
+    */
+    public ServerResponse checkAdminRole(User user){
+        if (user !=null && user.getRole().intValue() == Const.Role.ROLE_ADMIN){
+            return ServerResponse.creatBySuccess();
+        }
+        return ServerResponse.createByError();
+    }
 }

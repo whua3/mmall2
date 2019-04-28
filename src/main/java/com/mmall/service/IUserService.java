@@ -31,4 +31,6 @@ public interface IUserService {
 
     ServerResponse<String> registerAdmin(User user);
 
+    ServerResponse checkAdminRole(User user);
+
 }
