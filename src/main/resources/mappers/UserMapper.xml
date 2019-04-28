@@ -132,9 +132,7 @@
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="updateTime != null">
                 update_time = now(),
-            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -154,10 +152,10 @@
     <select id="checkUsername" resultType="int" parameterType="string">
     select count(1) from mmall_user
     where username = #{username}
---     #{username}用#号是为了防止sql注入，会进行预编译
+     <!--#{username}用#号是为了防止sql注入，会进行预编译-->
   </select>
     <select id="selectLogin" resultMap="BaseResultMap" parameterType="map">
-        -- 输入为多个参数，所以parameterType为map
+        <!-- 输入为多个参数，所以parameterType为map-->
         select
         <include refid="Base_Column_List"/>
         from mmall_user
@@ -183,5 +181,19 @@
     set password = #{password}, update_time = now()
     where username = #{username}
   </update>
+    <select id="selectPasswordByPrimaryKey" resultType="string" parameterType="integer" >
+        select password from mmall_user
+        where id = #{userId}
+    </select>
+    <update id="updatePasswordByPrimaryKey" parameterType="map" >
+        update mmall_user
+        set password = #{passwordNew}, update_time = now()
+        where id = #{userId}
+    </update>
+    <select id="checkEmailByUserId" resultType="int" parameterType="map" >
+        select count(1) from mmall_user
+        where email = #{email}
+        and id != #{userId}
+    </select>
 
 </mapper>

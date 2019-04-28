@@ -138,4 +138,76 @@ public class UserServiceImpl implements IUserService {
         }
         return ServerResponse.createByErrorMessage("修改密码失败");
     }
+
+    @Override
+    public ServerResponse<String> resetPassword(Integer userId,String passwordOld, String passwordNew) {
+        String password = userMapper.selectPasswordByPrimaryKey(userId);
+        if (StringUtils.equals(password,MD5Util.MD5EncodeUtf8(passwordOld))){
+            int resultCount = userMapper.updatePasswordByPrimaryKey(userId, MD5Util.MD5EncodeUtf8(passwordNew));
+            if (resultCount>0){
+                return ServerResponse.creatBySuccessMessage("修改密码成功");
+            }
+            return ServerResponse.createByErrorMessage("修改密码失败");
+        }
+        return ServerResponse.createByErrorMessage("修改密码失败，旧密码错误");
+    }
+
+    @Override
+    public ServerResponse<User> updateInformation(User user) {
+        // 校验email是否存在
+        int resultCount = userMapper.checkEmailByUserId(user.getEmail(), user.getId());
+        if (resultCount > 0){
+            return ServerResponse.createByErrorMessage("email已存在，请更换email再尝试更新");
+        }
+        User updateUser = new User();
+        updateUser.setId(user.getId());
+        updateUser.setEmail(user.getEmail());
+        updateUser.setPhone(user.getPhone());
+        updateUser.setQuestion(user.getQuestion());
+        updateUser.setAnswer(user.getAnswer());
+
+        int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
+        if (updateCount>0){
+            updateUser = userMapper.selectByPrimaryKey(user.getId());
+            updateUser.setPassword(StringUtils.EMPTY);
+            return ServerResponse.creatBySuccess("更新个人信息成功",updateUser);
+        }
+        return ServerResponse.createByErrorMessage("更新个人信息失败");
+    }
+
+    @Override
+    public ServerResponse<User> getinformation(Integer userId) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        if (user == null){
+            return ServerResponse.createByErrorMessage("获取用户信息失败");
+        }
+        user.setPassword(StringUtils.EMPTY);
+        return ServerResponse.creatBySuccess(user);
+    }
+
+    //backend
+
+
+    @Override
+    public ServerResponse<String> registerAdmin(User user) {
+        //验证用户名是否存在
+        ServerResponse<String> validResponse = this.checkValid(user.getUsername(), Const.USERNAME);
+        if (!validResponse.isSuccess()) {
+            return validResponse;
+        }
+        //验证邮箱是否存在
+        validResponse = this.checkValid(user.getEmail(), Const.EMAIL);
+        if (!validResponse.isSuccess()) {
+            return validResponse;
+        }
+
+        user.setRole(Const.Role.ROLE_ADMIN);
+        //MD5加密
+        user.setPassword(MD5Util.MD5EncodeUtf8(user.getPassword()));
+        int resultCount = userMapper.insert(user);
+        if (resultCount == 0) {
+            return ServerResponse.createByErrorMessage("注册失败");
+        }
+        return ServerResponse.creatBySuccessMessage("注册成功");
+    }
 }

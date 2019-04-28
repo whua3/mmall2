@@ -21,12 +21,12 @@ public class TokenCache {
     public static final String TOKEN_PREFIX = "token_";
 
     private static LoadingCache<String, String> localCache = CacheBuilder.newBuilder()
-            .initialCapacity(1000).maximumSize(10000).expireAfterAccess(12, TimeUnit.HOURS)
+            .initialCapacity(1000).maximumSize(10000).expireAfterAccess(30, TimeUnit.SECONDS)
             .build(new CacheLoader<String, String>() {
                 //当读取缓存中的内容时，如果没有对应的key，则调用这个方法进行加载
                 @Override
                 public String load(String s) throws Exception {
-                    return null;
+                    return "null";
                 }
             });
 
@@ -35,10 +35,9 @@ public class TokenCache {
     }
 
     public static String getValueByKey(String key) {
-        String value;
         try {
-            value = localCache.get(key);
-            if (StringUtils.isBlank(value)) {
+            String value = localCache.get(key);
+            if (StringUtils.equals(value, "null")) {
                 return null;
             }
             return value;
