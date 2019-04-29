@@ -9,11 +9,9 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 
 /**
- * @program: mmall
- * @description:
  * @author: whua
- * @create: 2018-05-24 19:21
- **/
+ * @create: 2019/04/29 10:18
+ */
 public class PropertiesUtil {
 
     private static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
@@ -39,11 +37,11 @@ public class PropertiesUtil {
     }
 
     public static String getProperty(String key, String defaultValue) {
-
         String value = props.getProperty(key.trim());
         if (StringUtils.isBlank(value)) {
             value = defaultValue;
         }
         return value.trim();
     }
+
 }
