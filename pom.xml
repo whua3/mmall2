@@ -185,7 +185,7 @@
     </dependency>
 
 
-    <!-- mybatis pager -->
+    <!-- mybatis pagehelper -->
 
     <dependency>
       <groupId>com.github.pagehelper</groupId>
