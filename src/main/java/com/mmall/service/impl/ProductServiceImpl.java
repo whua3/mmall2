@@ -123,16 +123,21 @@ public class ProductServiceImpl implements IProductService {
         //填充自己的sql查询逻辑
         //pageHelper--收尾
         PageHelper.startPage(pageNum, pageSize);
+        // sql查询出结果
         List<Product> productList = productMapper.selectList();
 
+        // 将查询出来的结果封装到对象productListVoList中
         ArrayList<ProductListVO> productListVoList = Lists.newArrayList();
         for (Product productItem : productList) {
             ProductListVO productListVO = assembleProductListVO(productItem);
             productListVoList.add(productListVO);
         }
 
+        // 创建一个PageInfo对象，并使用productList进行初始化
         PageInfo pageResult = new PageInfo(productList);
+        // 将要展示的结果productListVoList，set到pageResult的list中去
         pageResult.setList(productListVoList);
+        // 返回
         return ServerResponse.creatBySuccess(pageResult);
     }
 
