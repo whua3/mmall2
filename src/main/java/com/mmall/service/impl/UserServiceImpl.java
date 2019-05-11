@@ -2,11 +2,11 @@ package com.mmall.service.impl;
 
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
-import com.mmall.common.TokenCache;
 import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.util.MD5Util;
+import com.mmall.util.RedisPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -107,7 +107,7 @@ public class UserServiceImpl implements IUserService {
         if (resultCount > 0) {
             //问题和答案匹配
             String forgetToken = UUID.randomUUID().toString();
-            TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);
+            RedisPoolUtil.setEx(Const.TOKEN_PREFIX + username, forgetToken, Const.RedisCacheExtime.TOKEN_CACHE_EXTIME);
             return ServerResponse.creatBySuccess(forgetToken);
         }
 
@@ -123,7 +123,7 @@ public class UserServiceImpl implements IUserService {
         if (validResponse.isSuccess()) {
             return ServerResponse.createByErrorMessage("用户不存在");
         }
-        String token = TokenCache.getValueByKey(TokenCache.TOKEN_PREFIX + username);
+        String token = RedisPoolUtil.get(Const.TOKEN_PREFIX + username);
         if (StringUtils.isBlank(token)) {
             return ServerResponse.createByErrorMessage("token无效或过期");
         }
@@ -140,11 +140,11 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ServerResponse<String> resetPassword(Integer userId,String passwordOld, String passwordNew) {
+    public ServerResponse<String> resetPassword(Integer userId, String passwordOld, String passwordNew) {
         String password = userMapper.selectPasswordByPrimaryKey(userId);
-        if (StringUtils.equals(password,MD5Util.MD5EncodeUtf8(passwordOld))){
+        if (StringUtils.equals(password, MD5Util.MD5EncodeUtf8(passwordOld))) {
             int resultCount = userMapper.updatePasswordByPrimaryKey(userId, MD5Util.MD5EncodeUtf8(passwordNew));
-            if (resultCount>0){
+            if (resultCount > 0) {
                 return ServerResponse.creatBySuccessMessage("修改密码成功");
             }
             return ServerResponse.createByErrorMessage("修改密码失败");
@@ -156,7 +156,7 @@ public class UserServiceImpl implements IUserService {
     public ServerResponse<User> updateInformation(User user) {
         // 校验email是否存在
         int resultCount = userMapper.checkEmailByUserId(user.getEmail(), user.getId());
-        if (resultCount > 0){
+        if (resultCount > 0) {
             return ServerResponse.createByErrorMessage("email已存在，请更换email再尝试更新");
         }
         User updateUser = new User();
@@ -167,10 +167,10 @@ public class UserServiceImpl implements IUserService {
         updateUser.setAnswer(user.getAnswer());
 
         int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
-        if (updateCount>0){
+        if (updateCount > 0) {
             updateUser = userMapper.selectByPrimaryKey(user.getId());
             updateUser.setPassword(StringUtils.EMPTY);
-            return ServerResponse.creatBySuccess("更新个人信息成功",updateUser);
+            return ServerResponse.creatBySuccess("更新个人信息成功", updateUser);
         }
         return ServerResponse.createByErrorMessage("更新个人信息失败");
     }
@@ -178,7 +178,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ServerResponse<User> getinformation(Integer userId) {
         User user = userMapper.selectByPrimaryKey(userId);
-        if (user == null){
+        if (user == null) {
             return ServerResponse.createByErrorMessage("获取用户信息失败");
         }
         user.setPassword(StringUtils.EMPTY);
@@ -212,12 +212,12 @@ public class UserServiceImpl implements IUserService {
     }
 
     /**
-    * @description: 校验用户是否为管理员
-    * @param: [user]
-    * @return: com.mmall.common.ServerResponse
-    */
-    public ServerResponse checkAdminRole(User user){
-        if (user !=null && user.getRole().intValue() == Const.Role.ROLE_ADMIN){
+     * @description: 校验用户是否为管理员
+     * @param: [user]
+     * @return: com.mmall.common.ServerResponse
+     */
+    public ServerResponse checkAdminRole(User user) {
+        if (user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN) {
             return ServerResponse.creatBySuccess();
         }
         return ServerResponse.createByError();
