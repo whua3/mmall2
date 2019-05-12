@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class CookieUtil {
 
-    private final static String COOKIE_DOMAIN = ".mmall.com";
+    private final static String COOKIE_DOMAIN = "mmall.com";
     private final static String COOKIE_NAME = "mmall.login.token";
 
     public static void writeLoginToken(HttpServletResponse response, String token) {
@@ -28,7 +28,12 @@ public class CookieUtil {
         // 3、如果这个maxAge不设置的话，cookie就不会写入硬盘，而是写在内存。只在当前页面有效。
         cookie.setMaxAge(60 * 60 * 24 * 365);
         log.info("write cookieName:{}, cookieValue:{}", cookie.getName(), cookie.getValue());
-        response.addCookie(cookie);
+        try {
+            response.addCookie(cookie);
+        } catch (Exception e) {
+            log.error("add cookie error",e);
+        }
+
     }
 
     public static String readLoginToken(HttpServletRequest request) {
