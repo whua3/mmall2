@@ -90,7 +90,8 @@ public class CloseOrderTask {
         RLock lock = redissonManager.getRedisson().getLock(Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);
         boolean getLock = false;
         try {
-            if (getLock = lock.tryLock(Integer.parseInt(PropertiesUtil.getProperty("wait.lock.time", "2")),
+            //tryLock中第一个参数waitTime最好是设置为0，不然可能会造成多个进程都能获取到锁
+            if (getLock = lock.tryLock(Integer.parseInt(PropertiesUtil.getProperty("wait.lock.time", "0")),
                     Integer.parseInt(PropertiesUtil.getProperty("lock.ttl", "5")), TimeUnit.SECONDS)) {
                 log.info("Redisson获取到分布式锁:{},ThreadName:{}", Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK, Thread.currentThread().getName());
                 int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.hour", "2"));
@@ -118,6 +119,4 @@ public class CloseOrderTask {
         log.info("释放{},ThreadName:{}", Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK, Thread.currentThread().getName());
         log.info("======================================");
     }
-
-
 }
