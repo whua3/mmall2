@@ -1,9 +1,7 @@
 package com.mmall.util;
 
 import com.mmall.common.RedisShardedPool;
-import com.mmall.common.RedisShardedPool;
 import lombok.extern.slf4j.Slf4j;
-import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedis;
 
 /**
@@ -99,6 +97,40 @@ public class RedisShardedPoolUtil {
             RedisShardedPool.returnBrokenResource(jedis);
             return null;
         }
+        RedisShardedPool.returnResource(jedis);
+        return result;
+    }
+
+    public static Long setnx(String key, String value) {
+        ShardedJedis jedis = null;
+        Long result;
+
+        try {
+            jedis = RedisShardedPool.getJedis();
+            result = jedis.setnx(key, value);
+        } catch (Exception e) {
+            log.error("setnx key:{} value:{} error", key, value, e);
+            RedisShardedPool.returnBrokenResource(jedis);
+            return null;
+        }
+
+        RedisShardedPool.returnResource(jedis);
+        return result;
+    }
+
+    public static String getset(String key, String value) {
+        ShardedJedis jedis = null;
+        String result;
+
+        try {
+            jedis = RedisShardedPool.getJedis();
+            result = jedis.getSet(key, value);
+        } catch (Exception e) {
+            log.error("getset key:{} value:{} error", key, value, e);
+            RedisShardedPool.returnBrokenResource(jedis);
+            return null;
+        }
+
         RedisShardedPool.returnResource(jedis);
         return result;
     }
