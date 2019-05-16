@@ -13,11 +13,11 @@
 
     <appender name="mmall" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--<File>/developer/apache-tomcat-7.0.73/logs/mmall.log</File>-->
-        <File>/Users/whua/Projects/Libraries/apache-tomcat-9.0.16/logs/mmall.log</File>
+        <File>/Users/whua/Projects/Libraries/apache-tomcat1/logs/mmall.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--<fileNamePattern>/developer/apache-tomcat-7.0.73/logs/mmall.log.%d{yyyy-MM-dd}.gz</fileNamePattern>-->
             <!--<fileNamePattern>/home/whua/software/tomcat/logs/mmall.log.%d{yyyy-MM-dd}.gz</fileNamePattern>-->
-            <fileNamePattern>/Users/whua/Projects/Libraries/apache-tomcat-9.0.16/logs/mmall.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>/Users/whua/Projects/Libraries/apache-tomcat1/logs/mmall.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <append>true</append>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
@@ -29,10 +29,10 @@
 
     <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--<File>/developer/apache-tomcat-7.0.73/logs/error.log</File>-->
-        <File>/Users/whua/Projects/Libraries/apache-tomcat-9.0.16/logs/error.log</File>
+        <File>/Users/whua/Projects/Libraries/apache-tomcat1/logs/error.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--<fileNamePattern>/home/whua/software/tomcat/logs/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>-->
-            <fileNamePattern>/Users/whua/Projects/Libraries/apache-tomcat-9.0.16/logs/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>/Users/whua/Projects/Libraries/apache-tomcat1/logs/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <append>true</append>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
