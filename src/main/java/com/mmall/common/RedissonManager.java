@@ -16,7 +16,7 @@ import javax.annotation.PostConstruct;
 @Slf4j
 public class RedissonManager {
 
-    private Config config =  new Config();
+    private Config config = new Config();
 
     private Redisson redisson = null;
 
@@ -31,13 +31,13 @@ public class RedissonManager {
     private static Integer redis2Port = Integer.parseInt(PropertiesUtil.getProperty("redis2.port"));
 
     @PostConstruct
-    private void init(){
+    private void init() {
         try {
             config.useSingleServer().setAddress(new StringBuilder().append(redisIp).append(":").append(redisPort).toString());
             redisson = (Redisson) Redisson.create(config);
             log.info("初始化Redisson结束");
         } catch (Exception e) {
-            log.error("redisson init error",e);
+            log.error("redisson init error", e);
         }
     }
 }
