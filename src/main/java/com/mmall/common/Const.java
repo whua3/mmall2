@@ -16,6 +16,10 @@ public class Const {
     public static final String EMAIL = "email";
     public static final String TOKEN_PREFIX = "token_";
 
+    public interface REDIS_LOCK{
+        String CLOSE_ORDER_TASK_LOCK = "CLOSE_ORDER_TASK_LOCK";//关闭订单的分布式锁
+    }
+
     public interface RedisCacheExtime {
         int REDIS_SESSION_EXTIME = 60 * 30;//30 minutes
         int TOKEN_CACHE_EXTIME = 60 * 60 * 12;//12 hours
