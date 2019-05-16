@@ -74,14 +74,15 @@ public class CloseOrderTask {
                 } else {
                     log.info("没有获得分布式锁:{}", Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);
                 }
+            } else {
+                log.info("没有获得分布式锁:{}", Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);
             }
-            log.info("没有获得分布式锁:{}", Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);
         }
         log.info("close order，定时任务结束");
     }
 
     private void closeOrder(String lockName) {
-        RedisShardedPoolUtil.expire(lockName, 5);//有效期5秒，防止死锁
+        RedisShardedPoolUtil.expire(lockName, Integer.parseInt(PropertiesUtil.getProperty("lock.ttl", "5")));//有效期5秒，防止死锁
         log.info("获取{},ThreadName:{}", Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK, Thread.currentThread().getName());
         int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.hour", "2"));
         iOrderService.closeOrder(hour);
